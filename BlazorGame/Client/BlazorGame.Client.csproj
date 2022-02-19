@@ -15,4 +15,8 @@
     <ProjectReference Include="..\Shared\BlazorGame.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\icons" />
+  </ItemGroup>
+
 </Project>
