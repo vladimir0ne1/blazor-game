@@ -1,4 +1,5 @@
-﻿using BlazorGame.Shared;
+﻿using Blazored.Toast.Services;
+using BlazorGame.Shared;
 
 namespace BlazorGame.Client.Services;
 
@@ -13,6 +14,13 @@ public interface IUnitService
 
 class UnitService : IUnitService
 {
+    private readonly IToastService toastService;
+
+    public UnitService(IToastService toastService)
+    {
+        this.toastService = toastService;
+    }
+
     /// <inheritdoc />
     public IList<Unit> Units { get; } = new List<Unit>
     {
@@ -29,7 +37,6 @@ class UnitService : IUnitService
     {
         var unit = Units.First(unit => unit.Id == unitId);
         MyUnits.Add(new UserUnit { UnitId = unit.Id, HitPoints = unit.HitPoints });
-        Console.WriteLine($"{unit.Name} was built");
-        Console.WriteLine($"Your army size: {MyUnits.Count}");
+        toastService.ShowSuccess($"Your {unit.Name} has been built!", "Unit Built!");
     }
 }
