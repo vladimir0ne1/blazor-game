@@ -1,14 +1,27 @@
 ﻿@page "/build"
 @inject IBananaService BananaService
+@inject IUnitService UnitService
 
 <h3>Build</h3>
 
-<button class="btn btn-primary" @onclick="() => EatBananas(10)">Eat Bananas</button>
+<div class="form-group">
+  <select @bind="selectedUnitId" class="form-control">
+    @foreach (var unit in UnitService.Units)
+    {
+      <option value="@unit.Id">@unit.Name // @unit.BananaCost Bananas</option>
+    }
+  </select>
+</div>
+
+<button class="btn btn-primary" @onclick="BuildUnit">Build</button>
 
 @code {
+  int selectedUnitId = 1;
 
-  private void EatBananas(int amount)
+  public void BuildUnit()
   {
-    BananaService.EatBananas(amount);
+    var selectedUnit = UnitService.Units.First(unit => unit.Id == selectedUnitId);
+    BananaService.EatBananas(selectedUnit.BananaCost);
+    UnitService.AddUnit(selectedUnitId);
   }
 }
