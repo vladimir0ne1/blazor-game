@@ -1,5 +1,17 @@
 ﻿@page "/"
+@attribute [Authorize]
 
 <PageTitle>Blazor Game</PageTitle>
 
-<h1>Welcome to Blazor Game!</h1>
+<AuthorizeView>
+  <Authorized>
+    <h1>Hi, @context.User.Identity?.Name. Welcome back!</h1>
+    Let's admire <a href="@nameof(Army)">your beloved army.</a>
+  </Authorized>
+  <NotAuthorized>
+    <h1>Welcome to Blazor Game!</h1>
+  </NotAuthorized>
+</AuthorizeView>
+
+
+

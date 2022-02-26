@@ -1,6 +1,10 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@inject ILocalStorageService LocalStorageService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">Blazor Game</a>
+        <a class="navbar-brand" href=""><img alt="axe" src="icons/axe.png"> Blazor Game</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -8,22 +12,44 @@
 </div>
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+
     <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="build">
-                <span class="oi oi-wrench" aria-hidden="true"></span> Build
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="army">
-                <span class="oi oi-people" aria-hidden="true"></span> My Army
-            </NavLink>
-        </div>
+        <AuthorizeView>
+            <Authorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                        <span class="oi oi-home" aria-hidden="true"></span> Home
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="build">
+                        <span class="oi oi-wrench" aria-hidden="true"></span> Build
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="army">
+                        <span class="oi oi-people" aria-hidden="true"></span> My Army
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <a class="nav-link" @onclick="LogOut" style="cursor: pointer;">
+                        <span class="oi oi-account-logout" aria-hidden="true"></span> Log Out
+                    </a>
+                </div>
+            </Authorized>
+            <NotAuthorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                        <span class="oi oi-home" aria-hidden="true"></span> Home
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="@nameof(Register)">
+                        <span class="oi oi-pencil" aria-hidden="true"></span> Register
+                    </NavLink>
+                </div>
+            </NotAuthorized>
+        </AuthorizeView>
     </nav>
 </div>
 
@@ -35,5 +61,13 @@
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+    private async Task LogOut()
+    {
+        await LocalStorageService.RemoveItemAsync(Constants.IsAuthenticated);
+        await LocalStorageService.RemoveItemAsync(nameof(UserLogin.UserName));
+        await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        NavigationManager.NavigateTo("/");
     }
 }
