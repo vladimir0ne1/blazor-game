@@ -67,4 +67,10 @@
     JSRuntime.InvokeVoidAsync("console.log", "New User: ", user);
     NavigationManager.NavigateTo("login");
   }
+
+  /// <inheritdoc />
+  protected override async Task OnInitializedAsync()
+  {
+    await UnitService.LoadUnitsAsync();
+  }
 }

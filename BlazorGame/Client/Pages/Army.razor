@@ -5,34 +5,48 @@
 
 <h3>My Army</h3>
 
-<table class="table">
-  @foreach (var userUnit in UnitService.MyUnits)
-  {
-    <tr>
-      <td>
-        @switch (userUnit.UnitId)
-        {
-          case 1:
-            <img src="icons/knight.png" alt="knight"/>
-            break;
-          case 2:
-            <img src="icons/archer.png" alt="archer"/>
-            break;
-          case 3:
-            <img src="icons/mage.png" alt="mage"/>
-            break;
-        }
-      </td>
-      <td>
-        @UnitService.Units.First(unit => unit.Id == userUnit.UnitId).Name
-      </td>
-      <td>
-        @userUnit.HitPoints HP
-      </td>
-    </tr>
-  }
-</table>
+@if (UnitService.Units.Count > 0)
+{
+  <table class="table">
+    @foreach (var userUnit in UnitService.MyUnits)
+    {
+      <tr>
+        <td>
+          @switch (userUnit.UnitId)
+          {
+            case 1:
+              <img src="icons/knight.png" alt="knight"/>
+              break;
+            case 2:
+              <img src="icons/archer.png" alt="archer"/>
+              break;
+            case 3:
+              <img src="icons/mage.png" alt="mage"/>
+              break;
+          }
+        </td>
+        <td>
+          @UnitService.Units.First(unit => unit.Id == userUnit.UnitId).Name
+        </td>
+        <td>
+          @userUnit.HitPoints HP
+        </td>
+      </tr>
+    }
+  </table>
+}
+else {
+  <span>Loading...</span>
+}
 
 @code {
+
+
+
+  /// <inheritdoc />
+  protected override async Task OnInitializedAsync()
+  {
+    await UnitService.LoadUnitsAsync();
+  }
 
 }
