@@ -4,8 +4,8 @@ namespace BlazorGame.Shared;
 
 public class UserLogin
 {
-    [Required(ErrorMessage = "Please enter a user name")]
-    public string? UserName { get; set; }
+    [Required(ErrorMessage = "Please enter a email")]
+    public string? Email { get; set; }
 
     [Required]
     public string? Password { get; set; }
