@@ -23,4 +23,6 @@ public class User
     public DateTime CreateDate { get; set; }
 
     public DateTime LastUpdateDate { get; set; }
+
+    public List<UserUnit> Units { get; set; }
 }
