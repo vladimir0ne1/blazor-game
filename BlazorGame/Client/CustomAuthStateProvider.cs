@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Text.Json;
 using Blazored.LocalStorage;
+using BlazorGame.Client.Services;
 using BlazorGame.Shared;
 using Microsoft.AspNetCore.Components.Authorization;
 
@@ -11,12 +12,17 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
 {
     private readonly ILocalStorageService localStorageService;
     private readonly HttpClient http;
+    private readonly IBananaService bananaService;
 
     /// <inheritdoc />
-    public CustomAuthStateProvider(ILocalStorageService localStorageService, HttpClient http)
+    public CustomAuthStateProvider(
+        ILocalStorageService localStorageService,
+        HttpClient http,
+        IBananaService bananaService)
     {
         this.localStorageService = localStorageService;
         this.http = http;
+        this.bananaService = bananaService;
     }
 
     /// <inheritdoc />
@@ -29,8 +35,18 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
         var identity = new ClaimsIdentity();
         if (!string.IsNullOrEmpty(authToken))
         {
-            identity = new ClaimsIdentity(ParseClaimsFromJwt(authToken), "jwt");
-            http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authToken);
+            try
+            {
+                identity = new ClaimsIdentity(ParseClaimsFromJwt(authToken), "jwt");
+                http.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", authToken.Replace("\"", ""));
+                await bananaService.GetBananas();
+            }
+            catch
+            {
+                await localStorageService.RemoveItemAsync(Constants.AuthToken);
+                identity = new ClaimsIdentity();
+            }
         }
 
         var user = new ClaimsPrincipal(identity);
