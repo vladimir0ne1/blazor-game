@@ -24,9 +24,10 @@ public class BananaService : IBananaService
         BananasChanged();
     }
 
-    public void AddBananas(int amount)
+    public async Task AddBananas(int amount)
     {
-        Bananas += amount;
+        var result =await http.PutAsJsonAsync<int>("api/User/addbananas", amount);
+        Bananas = await result.Content.ReadFromJsonAsync<int>();
         BananasChanged();
     }
 

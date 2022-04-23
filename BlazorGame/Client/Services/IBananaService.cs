@@ -8,7 +8,7 @@ public interface IBananaService
 
     void EatBananas(int amount);
 
-    void AddBananas(int amount);
+    Task AddBananas(int amount);
 
     Task GetBananas();
 }
