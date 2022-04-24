@@ -5,18 +5,18 @@ namespace BlazorGame.Shared;
 public class UserRegister
 {
     [Required, EmailAddress]
-    public string? Email { get; set; }
+    public string Email { get; set; }
 
     [Required, StringLength(16, ErrorMessage = "Your user name is too long (16 characters max).")]
-    public string? UserName { get; set; }
+    public string UserName { get; set; }
 
-    public string? Details { get; set; }
+    public string Details { get; set; }
 
     [Required, StringLength(100, MinimumLength = 6)]
-    public string? Password { get; set; }
+    public string Password { get; set; }
 
     [Compare(nameof(Password), ErrorMessage = "Passwords do not match.")]
-    public string? ConfirmPassword { get; set; }
+    public string ConfirmPassword { get; set; }
 
     public int StartUnitId { get; set; } = 1;
 

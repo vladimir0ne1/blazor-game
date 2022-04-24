@@ -28,11 +28,11 @@ public class DataContext : DbContext
             .OnDelete(DeleteBehavior.NoAction);
     }
 
-    public DbSet<Unit>? Units { get; set; }
+    public DbSet<Unit> Units { get; set; }
 
-    public DbSet<User>? Users { get; set; }
+    public DbSet<User> Users { get; set; }
 
-    public DbSet<Battle>? Battles { get; set; }
+    public DbSet<Battle> Battles { get; set; }
 
-    public DbSet<UserUnit>? UserUnits { get; set; }
+    public DbSet<UserUnit> UserUnits { get; set; }
 }
