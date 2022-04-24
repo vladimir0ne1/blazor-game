@@ -27,7 +27,7 @@ public class AuthController : ControllerBase
             Email = request.Email
         };
 
-        var res = await authRepository.Register(newUser, request.Password);
+        var res = await authRepository.Register(newUser, request.Password, request.StartUnitId);
 
         if (!res.Success)
         {

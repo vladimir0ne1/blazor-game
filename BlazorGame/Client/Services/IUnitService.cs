@@ -16,6 +16,8 @@ public interface IUnitService
     Task LoadUnitsAsync();
 
     Task LoadUserUnitsAsync();
+
+    Task ReviveArmy();
 }
 
 class UnitService : IUnitService
@@ -67,5 +69,21 @@ class UnitService : IUnitService
     public async Task LoadUserUnitsAsync()
     {
         MyUnits = await http.GetFromJsonAsync<IList<UserUnit>>("api/UserUnit");
+    }
+
+    public async Task ReviveArmy()
+    {
+        var result = await http.PostAsJsonAsync<string>("api/userunit/revive", null);
+        if (result.StatusCode == HttpStatusCode.OK)
+        {
+            toastService.ShowSuccess(await result.Content.ReadAsStringAsync());
+        }
+        else
+        {
+            toastService.ShowError(await result.Content.ReadAsStringAsync());
+        }
+
+        await LoadUserUnitsAsync();
+        await bananaService.GetBananas();
     }
 }

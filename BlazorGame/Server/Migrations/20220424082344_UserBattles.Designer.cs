@@ -4,6 +4,7 @@ using BlazorGame.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazorGame.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220424082344_UserBattles")]
+    partial class UserBattles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,43 +23,6 @@ namespace BlazorGame.Server.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-
-            modelBuilder.Entity("BlazorGame.Shared.Battle", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("AttackerId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("BattleDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("OpponentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RoundsFought")
-                        .HasColumnType("int");
-
-                    b.Property<int>("WinnerDamage")
-                        .HasColumnType("int");
-
-                    b.Property<int>("WinnerId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AttackerId");
-
-                    b.HasIndex("OpponentId");
-
-                    b.HasIndex("WinnerId");
-
-                    b.ToTable("Battles");
-                });
 
             modelBuilder.Entity("BlazorGame.Shared.Unit", b =>
                 {
@@ -167,33 +132,6 @@ namespace BlazorGame.Server.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserUnits");
-                });
-
-            modelBuilder.Entity("BlazorGame.Shared.Battle", b =>
-                {
-                    b.HasOne("BlazorGame.Shared.User", "Attacker")
-                        .WithMany()
-                        .HasForeignKey("AttackerId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("BlazorGame.Shared.User", "Opponent")
-                        .WithMany()
-                        .HasForeignKey("OpponentId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("BlazorGame.Shared.User", "Winner")
-                        .WithMany()
-                        .HasForeignKey("WinnerId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Attacker");
-
-                    b.Navigation("Opponent");
-
-                    b.Navigation("Winner");
                 });
 
             modelBuilder.Entity("BlazorGame.Shared.UserUnit", b =>

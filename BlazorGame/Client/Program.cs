@@ -12,7 +12,9 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddScoped<IBananaService, BananaService>();
+builder.Services.AddScoped<ILeaderboardService, LeaderboardService>();
 builder.Services.AddScoped<IUnitService, UnitService>();
+builder.Services.AddScoped<IBattleService, BattleService>();
 builder.Services.AddBlazoredToast();
 builder.Services.AddBlazoredLocalStorage();
 

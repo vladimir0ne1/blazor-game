@@ -10,7 +10,7 @@ namespace BlazorGame.Server.Data;
 
 public interface IAuthRepository
 {
-    Task<ServiceResponse<int>> Register(User user, string password);
+    Task<ServiceResponse<int>> Register(User user, string password, int startUnitId);
 
     /// <returns>Token</returns>
     Task<ServiceResponse<string>> Login(string email, string password);
@@ -30,7 +30,7 @@ public class AuthRepository : IAuthRepository
     }
 
     /// <inheritdoc />
-    public async Task<ServiceResponse<int>> Register(User user, string password)
+    public async Task<ServiceResponse<int>> Register(User user, string password, int startUnitId)
     {
         if (await UserExists(user.Email))
         {
@@ -47,10 +47,24 @@ public class AuthRepository : IAuthRepository
         context.Users.Add(user);
         await context.SaveChangesAsync();
 
+        await AddStartingUnit(user, startUnitId);
+
         return  new ServiceResponse<int>
         {
             Data = user.Id, Success = true, Message = "Registration successfull"
         };
+    }
+
+    private async Task AddStartingUnit(User user, int startUnitId)
+    {
+        var unit = await context.Units.FindAsync(startUnitId);
+        context.UserUnits.Add(new UserUnit
+        {
+            UnitId = unit.Id,
+            UserId = user.Id,
+            HitPoints = unit.HitPoints,
+        });
+        await context.SaveChangesAsync();
     }
 
     /// <inheritdoc />
