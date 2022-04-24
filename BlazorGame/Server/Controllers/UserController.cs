@@ -1,9 +1,8 @@
-using System.Security.Claims;
 using BlazorGame.Server.Data;
+using BlazorGame.Server.Services;
 using BlazorGame.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace BlazorGame.Server.Controllers
 {
@@ -13,10 +12,12 @@ namespace BlazorGame.Server.Controllers
     public class UserController : ControllerBase
     {
         private readonly DataContext context;
+        private readonly IUtilityService utilityService;
 
-        public UserController(DataContext context)
+        public UserController(DataContext context, IUtilityService utilityService)
         {
             this.context = context;
+            this.utilityService = utilityService;
         }
 
         [HttpGet("getbananas")]
@@ -37,8 +38,6 @@ namespace BlazorGame.Server.Controllers
             return Ok(user.Bananas);
         }
 
-        private int GetUserId() => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-        private async Task<User> GetUser() => await context.Users.FirstAsync(u => u.Id == GetUserId());
+        private async Task<User> GetUser() => await utilityService.GetUser();
     }
 }

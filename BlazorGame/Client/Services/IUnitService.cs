@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Json;
+﻿using System.Net;
+using System.Net.Http.Json;
 using Blazored.Toast.Services;
 using BlazorGame.Shared;
 
@@ -10,20 +11,24 @@ public interface IUnitService
 
     public IList<UserUnit> MyUnits { get; set; }
 
-    void AddUnit(int unitId);
+    Task AddUnit(int unitId);
 
     Task LoadUnitsAsync();
+
+    Task LoadUserUnitsAsync();
 }
 
 class UnitService : IUnitService
 {
     private readonly IToastService toastService;
     private readonly HttpClient http;
+    private readonly IBananaService bananaService;
 
-    public UnitService(IToastService toastService, HttpClient http)
+    public UnitService(IToastService toastService, HttpClient http, IBananaService bananaService)
     {
         this.toastService = toastService;
         this.http = http;
+        this.bananaService = bananaService;
     }
 
     /// <inheritdoc />
@@ -33,11 +38,20 @@ class UnitService : IUnitService
     public IList<UserUnit> MyUnits { get; set; } = new List<UserUnit>();
 
     /// <inheritdoc />
-    public void AddUnit(int unitId)
+    public async Task AddUnit(int unitId)
     {
         var unit = Units.First(unit => unit.Id == unitId);
-        MyUnits.Add(new UserUnit { UnitId = unit.Id, HitPoints = unit.HitPoints });
-        toastService.ShowSuccess($"Your {unit.Name} has been built!", "Unit Built!");
+
+        var result = await http.PostAsJsonAsync<int>("api/userunit", unitId);
+        if (result.StatusCode != HttpStatusCode.OK)
+        {
+            toastService.ShowError(await result.Content.ReadAsStringAsync());
+        }
+        else
+        {
+            await bananaService.GetBananas();
+            toastService.ShowSuccess($"Your {unit.Name} has been built!", "Unit Built!");
+        }
     }
 
     /// <inheritdoc />
@@ -47,5 +61,11 @@ class UnitService : IUnitService
         {
             Units = await http.GetFromJsonAsync<IList<Unit>>("api/Unit");
         }
+    }
+
+    /// <inheritdoc />
+    public async Task LoadUserUnitsAsync()
+    {
+        MyUnits = await http.GetFromJsonAsync<IList<UserUnit>>("api/UserUnit");
     }
 }
